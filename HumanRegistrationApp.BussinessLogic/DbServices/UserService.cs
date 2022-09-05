@@ -1,5 +1,6 @@
 ﻿using humanRegistrationApp.Database.Repositories;
 using HumanRegistrationApp.BussinessLogic.DTOs;
+using HumanRegistrationApp.Database.AccountService;
 using PersonRegistrationApp.BussinessLogic;
 
 namespace HumanRegistrationApp.BussinessLogic.DbServices
@@ -7,13 +8,15 @@ namespace HumanRegistrationApp.BussinessLogic.DbServices
     public class UserService :IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IAccountService _accountService;
+        public UserService(IUserRepository userRepository, IAccountService accountService)
         {
             _userRepository = userRepository;
+            _accountService = accountService;
         }
         public ResponseDto Login(string username, string password)
         {
-            var userExist = _userRepository.Login(username, password);
+            var userExist = _accountService.Login(username, password);
             if(userExist is null)
             {
                 return new ResponseDto(false, "Log in has failed, check if inputed correct credentials");
@@ -27,7 +30,7 @@ namespace HumanRegistrationApp.BussinessLogic.DbServices
             {
                 return new ResponseDto(false, "User already exists");
             }
-            _userRepository.SignUpAccount(username, password);
+            _accountService.SignUpAccount(username, password);
             return new ResponseDto(true, "User has been created");
         }
         public ResponseDto DeleteUser(string userId)

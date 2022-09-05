@@ -1,4 +1,5 @@
 ﻿using humanRegistrationApp.Database.Repositories;
+using HumanRegistrationApp.Database.AccountService;
 using HumanRegistrationApp.Database.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,7 @@ namespace HumanRegistrationApp.Database.Extensions
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IAccountService, AccountService.AccountService>();
             return services;
         }
     }
