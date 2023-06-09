@@ -1,6 +1,7 @@
 ﻿using HumanRegistrationApp.BussinessLogic.ImageServices;
 using Microsoft.AspNetCore.Http;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 
 
@@ -31,6 +32,15 @@ namespace HumanRegistrationSystem.ImageHandler.ImageServices
         {
             var redrawn = ImageResize(imageRequest);
             return ImageToByteArray(redrawn);
+        }
+        public Image ByteArrayToImage(byte[] imageBytes)
+        {
+            //ImageConverter converter = new ImageConverter();
+            //Image myImage = (Image)converter.ConvertTo(imageBytes, typeof(Image));
+            //return myImage;
+            Image image = Image.FromStream(new MemoryStream(imageBytes));
+           
+            return image;
         }
 
     }

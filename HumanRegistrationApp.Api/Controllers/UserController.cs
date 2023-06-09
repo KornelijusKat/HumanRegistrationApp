@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace PersonRegistrationApp.Api.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     [Route("[controller]")]
     public class UserController : Controller
     {
@@ -29,7 +30,7 @@ namespace PersonRegistrationApp.Api.Controllers
                 return BadRequest(response.Message);
             return response;
         }
-        [HttpPost("Log in")]
+        [HttpPost("Login")]
         public ActionResult<ResponseDto> Login([FromBody] UserDto userDto)
         {
             var response = _userService.Login(userDto.UserName,userDto.Password);

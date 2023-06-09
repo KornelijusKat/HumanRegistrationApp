@@ -9,5 +9,6 @@ namespace HumanRegistrationApp.BussinessLogic.ImageServices
         byte[] ImageToByteArray(Image image);
         Image ImageResize(IFormFile imageRequest);
         byte[] GetByteArray(IFormFile imageRequest);
+        Image ByteArrayToImage(byte[] imageBytes);
     }
 }

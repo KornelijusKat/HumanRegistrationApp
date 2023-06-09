@@ -1,10 +1,12 @@
 ﻿using humanRegistrationApp.Database.Repositories;
 using HumanRegistrationApp.BussinessLogic.DTOs;
 using HumanRegistrationApp.BussinessLogic.Extensions;
+using HumanRegistrationApp.BussinessLogic.Validations;
 using HumanRegistrationApp.Database.Model;
 using HumanRegistrationApp.Database.Repositories;
 using PersonRegistrationApp.BussinessLogic;
 using System;
+using System.Drawing;
 
 namespace HumanRegistrationApp.BussinessLogic.DbServices
 {
@@ -121,6 +123,27 @@ namespace HumanRegistrationApp.BussinessLogic.DbServices
                 ProfilePicture = picture,
                 UserId = Guid.Parse(userId),
                 Address = new Address
+                {
+                    City = personInput.Address.City,
+                    Street = personInput.Address.Street,
+                    FlatNumber = personInput.Address.FlatNumber,
+                    HouseNumber = personInput.Address.HouseNumber
+                }
+            };
+            return newPerson;
+        }
+            public PersonImage ConvertPersonToImagePerson(PersonDto personInput, Image picture)
+        {
+            var newPerson = new PersonImage
+            {
+                FirstName = personInput.FirstName,
+                LastName = personInput.LastName,
+                PersonCode = personInput.PersonCode,
+                TelephoneNumber = personInput.TelephoneNumber,
+                Email = personInput.Email,
+                ProfilePicture = picture,
+                //UserId = Guid.Parse(userId),
+                Address = new AddressDto
                 {
                     City = personInput.Address.City,
                     Street = personInput.Address.Street,

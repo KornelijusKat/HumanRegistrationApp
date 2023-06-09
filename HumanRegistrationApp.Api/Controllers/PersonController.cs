@@ -3,6 +3,7 @@ using HumanRegistrationApp.BussinessLogic.DTOs;
 using HumanRegistrationApp.BussinessLogic.ImageServices;
 using HumanRegistrationApp.BussinessLogic.InputModels;
 using HumanRegistrationApp.BussinessLogic.Validations;
+using HumanRegistrationApp.Database.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace PersonRegistrationApp.Api.Controllers
             _personService = personService;
             _imageService = imageService;
         }
-        [HttpPost("Posting Person Data")]
+        [HttpPost("PostingPersonData")]
         public ActionResult<ResponseDto> AddPersonDetails([FromForm] PersonRequestDto person,[FromForm] string userId)
         {
             var pictureByteArray = _imageService.GetByteArray(person.ProfilePicture.Picture);
@@ -33,8 +34,8 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return response;
         }
-        [HttpPut("Change Email")]
-        public ActionResult<ResponseDto> ChangeEmail([FromBody] string newValue, string userId)
+        [HttpPut("ChangeEmail")]
+        public ActionResult<ResponseDto> ChangeEmail([FromBody] string newValue,[FromQuery] string userId)
         {
             var response = _personService.EditPersonEmail("Email", newValue, userId);
             if (!response.IsSuccess)
@@ -43,8 +44,8 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return response;
         }
-        [HttpPut("Change Telephone Number")]
-        public ActionResult<ResponseDto> ChangeTelephoneNumber([FromBody] ValidTelephone newValue, string userId)
+        [HttpPut("ChangeTelephoneNumber")]
+        public ActionResult<ResponseDto> ChangeTelephoneNumber([FromBody] ValidTelephone newValue,[FromQuery] string userId)
         {
             var response = _personService.ChangePersonField<string>("TelephoneNumber", newValue.TelephoneNumber,userId );
             if (!response.IsSuccess)
@@ -53,8 +54,8 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return response;
         }
-        [HttpPut("Change FirstName")]
-        public ActionResult<ResponseDto> ChangeFirstName([FromBody] ValidString newValue,string userId)
+        [HttpPut("ChangeFirstName")]
+        public ActionResult<ResponseDto> ChangeFirstName([FromBody] ValidString newValue,[FromQuery] string userId)
         {
             var response = _personService.ChangePersonField<string>("FirstName", newValue.StringInput, userId);
             if (!response.IsSuccess)
@@ -63,18 +64,18 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return response;
         }
-        [HttpPut("Change Lastname")]
+        [HttpPut("ChangeLastName")]
         public ActionResult<ResponseDto> ChangeLastName([FromBody] ValidString newValue, string userId)
         {
-            var response = _personService.ChangePersonField<string>("Lastname", newValue.StringInput, userId);
+            var response = _personService.ChangePersonField<string>("LastName", newValue.StringInput, userId);
             if (!response.IsSuccess)
             {
                 return BadRequest(response.Message);
             }
             return response;
         }
-        [HttpPut("Change PersonCode")]
-        public ActionResult<ResponseDto> ChangePersonCode([FromBody] ValidPersonCode newValue, string userId)
+        [HttpPut("ChangePersonCode")]
+        public ActionResult<ResponseDto> ChangePersonCode([FromBody] ValidPersonCode newValue,[FromQuery] string userId)
         {
             var response = _personService.ChangePersonField<string>("PersonCode", newValue.PersonCode, userId);
             if (!response.IsSuccess)
@@ -83,7 +84,7 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return response;
         }
-        [HttpPut("Change City")]
+        [HttpPut("ChangeCity")]
         public ActionResult<ResponseDto> ChangeCity([FromBody] ValidString newValue,string userId)
         {
             var response = _personService.ChangePersonsAddressField<string>("City", newValue.StringInput, userId);
@@ -93,7 +94,7 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return response;
         }
-        [HttpPut("Change Street")]
+        [HttpPut("ChangeStreet")]
         public ActionResult<ResponseDto> ChangeStreet([FromBody] ValidString newValue, string userId)
         {
            var response = _personService.ChangePersonsAddressField<string>("Street", newValue.StringInput, userId);
@@ -103,7 +104,7 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return response;
         }
-        [HttpPut("Change House Number")]
+        [HttpPut("ChangeHouseNumber")]
         public ActionResult<ResponseDto> ChangeHouseNumber([FromBody] ValidInt newValue, string userId)
         {
             var response = _personService.ChangePersonsAddressField<int>("HouseNumber", newValue.Integer, userId);
@@ -123,12 +124,12 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return response;
         }
-        [HttpGet("Get Information On Person")]
-        public ActionResult GetPerson([FromQuery]string personId)
+        [HttpPost("GetInformationOnPerson")]
+        public ActionResult GetPerson([FromBody] ValidString personId)
         {
-            if (personId.IsGuidCompatible())
+            if (personId.StringInput.IsGuidCompatible())
             {
-                var resposne = _personService.ShowPersonById(personId);
+                var resposne = _personService.ShowPersonById(personId.StringInput);
                 if (resposne is null)
                 {
                     return BadRequest("Person doesn't exist");
@@ -137,7 +138,7 @@ namespace PersonRegistrationApp.Api.Controllers
             }
             return BadRequest("PersonId is not valid, check if input is not empty and is Guid compatible");
         }
-        [HttpPut("Change Profile Picture")]
+        [HttpPut("ChangeProfilePicture")]
         public ActionResult<ResponseDto> ChangePicture([FromForm] ValidIForm imageRequest,string userId)
         {
             var newImageArray = _imageService.GetByteArray(imageRequest.Picture);
@@ -147,6 +148,22 @@ namespace PersonRegistrationApp.Api.Controllers
                 return BadRequest(response.Message);
             }
             return response;
+        }
+        [HttpPost("GetInfoPicture")]
+        public ActionResult GetPersonWithImage([FromBody] ValidString personId)
+        {
+            if (personId.StringInput.IsGuidCompatible())
+            {
+                var resposne = _personService.ShowPersonById(personId.StringInput);
+                if (resposne is null)
+                {
+                    return BadRequest("Person doesn't exist");
+                }
+                var newImage = _imageService.ByteArrayToImage(resposne.ProfilePicture);
+                var convertedResponse = _personService.ConvertPersonToImagePerson(resposne, newImage);
+                return Ok(convertedResponse);
+            }
+            return BadRequest("PersonId is not valid, check if input is not empty and is Guid compatible");
         }
     }
 }

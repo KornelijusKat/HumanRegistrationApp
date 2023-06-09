@@ -15,13 +15,13 @@ namespace HumanRegistrationApp.Database.Repositories
             _context = context;
         }
         public void AddInformation(Person newPerson, string userid)
-        { 
+        {
             _context.Persons.Add(newPerson);
             _context.SaveChanges();
         }
         public Person FindPersonAndAddressByPersonId(string personId)
         {
-            return  _context.Persons.Include(x => x.Address).FirstOrDefault(x => x.Id == Guid.Parse(personId));         
+            return _context.Persons.Include(x => x.Address).FirstOrDefault(x => x.Id == Guid.Parse(personId));
         }
         public Person FindPersonById(string personId)
         {
@@ -44,7 +44,7 @@ namespace HumanRegistrationApp.Database.Repositories
         }
         public Person FindPersonAndAddressByUserId(string userId)
         {
-            return _context.Persons.Include(s=>s.Address).SingleOrDefault(x => x.UserId == Guid.Parse(userId));
+            return _context.Persons.Include(s => s.Address).SingleOrDefault(x => x.UserId == Guid.Parse(userId));
         }
     }
 }

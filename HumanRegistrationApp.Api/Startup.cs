@@ -83,7 +83,11 @@ namespace HumanRegistrationApp.Api
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors(x => x
+       .AllowAnyMethod()
+       .AllowAnyHeader()
+       .SetIsOriginAllowed(origin => true)
+       .AllowCredentials());
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

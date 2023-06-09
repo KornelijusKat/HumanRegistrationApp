@@ -1,6 +1,6 @@
 ﻿using HumanRegistrationApp.BussinessLogic.DTOs;
-
-
+using HumanRegistrationApp.Database.Model;
+using System.Drawing;
 
 namespace HumanRegistrationApp.BussinessLogic.DbServices
 {
@@ -11,5 +11,6 @@ namespace HumanRegistrationApp.BussinessLogic.DbServices
         ResponseDto EditPersonEmail(string field, string newValue, string userId);
         ResponseDto ChangePersonsAddressField<t>(string fieldname, t newValue, string userId);
         PersonDto ShowPersonById(string personId);
+        PersonImage ConvertPersonToImagePerson(PersonDto personInput, Image picture);
     }
 }
